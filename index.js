@@ -16,15 +16,30 @@ app.use(express.json())
 const uri = "mongodb+srv://Endgame:ZMZQy3ylbblL0lPp@cluster0.nyoi7m3.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-async function run(){
-    try{
+async function run() {
+    try {
         await client.connect();
-        const collection = client.db("test").collection("devices");
-        app.get('/', (req, res) => {
-            res.send('Hi mongodb add  Hello World!')
+        const collection = client.db("TodoList").collection("addItems");
+        app.post('/addItems', async (req, res) => {
+            const data = req.body;
+            console.log(data)
+            const result = await collection.insertOne(data);
+            res.send(result)
         })
-        
-    }finally {
+
+        app.get('/items', async (req, res) => {
+            // http://localhost:5000/items 
+            const data = {};
+            const result = await collection.find(data).toArray();
+            res.send(result)
+        })
+
+
+
+
+
+
+    } finally {
         //   await client.close();
     }
 }
