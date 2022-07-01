@@ -10,9 +10,7 @@ const cors = require('cors')
 app.use(cors())
 app.use(express.json())
 
-//Endgame
-//ZMZQy3ylbblL0lPp
-
+/*  ========================  Mongodb Add  ==========================   */
 const uri = "mongodb+srv://Endgame:ZMZQy3ylbblL0lPp@cluster0.nyoi7m3.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -20,13 +18,14 @@ async function run() {
     try {
         await client.connect();
         const collection = client.db("TodoList").collection("addItems");
+        /*  ==================  Add   Todo key   ==================*/
         app.post('/addItems', async (req, res) => {
             const data = req.body;
             console.log(data)
             const result = await collection.insertOne(data);
             res.send(result)
         })
-
+        /*  ==================  Total Todo get   ==================*/
         app.get('/items', async (req, res) => {
             // http://localhost:5000/items  // data fet 
             const data = {};
@@ -34,6 +33,7 @@ async function run() {
             res.send(result)
         })
 
+        /*  ==================  Todo update    ==================*/
         app.put('/upToDo/:id', async (req, res) => {
             const id = req.params.id;
             const todo = req.body;
@@ -47,8 +47,8 @@ async function run() {
             const Todo = await collection.updateOne(filter, updateDoc, options);
             res.send({ success: true, data: Todo });
         })
-        /* ============================= patch =================== */
-        
+
+        /* ============================= Todo Checkbox and complied  =================== */
         app.patch('/Checkbox/:CheckID', async (req, res) => {
             const data = req.params.CheckID;
             const id = { _id: ObjectId(data) }
@@ -64,16 +64,10 @@ async function run() {
 
 
 
-
-
-
     } finally {
         //   await client.close();
     }
 }
-
-
-
 run().catch(console.dir);
 
 app.listen(port, () => {
